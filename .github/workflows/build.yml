@@ -1,0 +1,29 @@
+name: build
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: |
+          cmake -S . -B build -G Ninja \
+            -DCMAKE_TOOLCHAIN_FILE="$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake" \
+            -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-24 \
+            -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build build -j
+      - name: Package .levipack
+        run: |
+          SO="$(find build -name libThreadProbe.so | head -n1)"
+          test -n "$SO"
+          mkdir -p dist/pkg
+          cp "$SO" dist/pkg/libThreadProbe.so
+          cp manifest.json dist/pkg/
+          (cd dist/pkg && zip -X ../ThreadProbe.levipack manifest.json libThreadProbe.so)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ThreadProbe-levipack
+          path: dist/ThreadProbe.levipack
