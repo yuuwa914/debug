@@ -1,0 +1,9 @@
+{
+  "type": "preload-native",
+  "name": "ThreadProbe",
+  "author": "yuuwa914",
+  "description": "Read-only diagnostics: logs per-thread CPU use, core, scheduler wait and timer jitter to logcat (tag ThreadProbe). Changes nothing.",
+  "version": "1.0.0",
+  "entry": "libThreadProbe.so",
+  "minecraft_versions": []
+}
